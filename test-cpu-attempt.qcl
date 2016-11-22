@@ -2,65 +2,53 @@
 
 include "cpu";
 
+
+const width = 3;
+const cells = 2^width;
+
 // Does it work inside another funct?
-cond qufunct fetch2(quconst addr, qureg mem, int cell, int width, qureg dest) {
+cond qufunct fetchy(quconst addr, qureg mem, qureg dest) {
 	qureg o[1];
-	eq(addr,cell,o);
-	// dump o;
-	if o {
-		Swap(seek(mem,cell,width),dest);
+	int cell;
+	const cells = #mem/width-1;
+
+	for cell = 0 to cells
+	{
+		eq(addr,cell,o);
+		if o { Swap(seek(mem,cell,width),dest); }
+		!eq(addr,cell,o);
 	}
+	
 }
 
 print "Testing eq()";
 
-qureg a[3];
-qureg r[1];
-qureg dest[1];
-qureg mem[8];
+qureg a[width];
+qureg dest[width];
+qureg mem[cells * width];
 int rOut;
 int i;
 int j;
-int tst = 1;
+int tst;
 boolean fail;
 
 
-for i = 3 to 3
+for i = 0 to cells-1
 {
+	tst = floor(random()* 2^width);
+
 	set(i, a);
-	set(tst, seek(mem,i,1));
+	set(tst, seek(mem,i,width));
 
-	dump mem;
+	fetchy(a, mem, dest);
 
-	for j = 0 to 7
-	{	
-		print "i=",i,"j=",j;
-		fetch2(a, mem, j, 1, dest);
-
-		dump mem;
-		dump dest;
-
-		// measure dest, rOut;
-		// // print "measured o", rOut;
-		// if i == j xor rOut != tst {
-		// 	print "Pass", i, "==", j, "->", rOut;
-		// } else {
-		// 	print "Fail", i, j;
-		// 	fail = true;
-		// }
-
-		// !fetch2(a, i, mem, j, 1, y);
+	measure dest, rOut;
+	if rOut == tst {
+		print "Pass", rOut, "=", tst, "cycle", i;
+	} else {
+		print "Fail", rOut, "=", tst, "cycle", i;
+		fail = true;
 	}
-
-	// dump dest;
-	// measure dest, rOut;
-	// // print "measured o", rOut;
-	// if rOut == tst {
-	// 	print "Pass", rOut, "=", tst, "cycle", i;
-	// } else {
-	// 	print "Fail", rOut, "=", tst, "cycle", i;
-	// 	fail = true;
-	// }
 
 	reset;
 }

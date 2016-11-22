@@ -35,10 +35,12 @@ boolean fail;
 
 for i = 0 to cells-1
 {
-	tst = floor(random()* 2^width);
+
+	randomize(mem);
+	measure seek(mem,i,width), tst;
 
 	set(i, a);
-	set(tst, seek(mem,i,width));
+
 
 	fetchy(a, mem, dest);
 

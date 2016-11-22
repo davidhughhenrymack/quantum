@@ -1,0 +1,72 @@
+
+
+include "cpu";
+
+// Does it work inside another funct?
+cond qufunct fetch2(quconst addr, qureg mem, int cell, int width, qureg dest) {
+	qureg o[1];
+	eq(addr,cell,o);
+	// dump o;
+	if o {
+		Swap(seek(mem,cell,width),dest);
+	}
+}
+
+print "Testing eq()";
+
+qureg a[3];
+qureg r[1];
+qureg dest[1];
+qureg mem[8];
+int rOut;
+int i;
+int j;
+int tst = 1;
+boolean fail;
+
+
+for i = 3 to 3
+{
+	set(i, a);
+	set(tst, seek(mem,i,1));
+
+	dump mem;
+
+	for j = 0 to 7
+	{	
+		print "i=",i,"j=",j;
+		fetch2(a, mem, j, 1, dest);
+
+		dump mem;
+		dump dest;
+
+		// measure dest, rOut;
+		// // print "measured o", rOut;
+		// if i == j xor rOut != tst {
+		// 	print "Pass", i, "==", j, "->", rOut;
+		// } else {
+		// 	print "Fail", i, j;
+		// 	fail = true;
+		// }
+
+		// !fetch2(a, i, mem, j, 1, y);
+	}
+
+	// dump dest;
+	// measure dest, rOut;
+	// // print "measured o", rOut;
+	// if rOut == tst {
+	// 	print "Pass", rOut, "=", tst, "cycle", i;
+	// } else {
+	// 	print "Fail", rOut, "=", tst, "cycle", i;
+	// 	fail = true;
+	// }
+
+	reset;
+}
+
+if fail {
+	print "Failed";
+} else {
+	print "Passed";
+}

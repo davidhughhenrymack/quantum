@@ -1,0 +1,42 @@
+
+include "cpu";
+
+const width = 1;
+const size = 10;
+
+int i;
+int tst;
+int out;
+boolean fail;
+
+qureg mem[size*width];
+qureg address[width];
+qureg dest[width];
+
+for i = 0 to size-1 {
+
+	set(i, address);
+	if random() > 0.5 {
+		tst = 1;
+	}
+	set(tst, mem[i]);
+
+	fetch(address, dest, mem, width);
+
+	measure dest, out;
+
+	if out == tst { print "Pass", i; }
+	else { 
+		print "Fail", out, tst, i;
+		fail = true;
+	}
+
+	reset;
+}
+
+if fail {
+	print "Failed";
+}
+else {
+	print "Passed";
+}

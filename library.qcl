@@ -1,0 +1,29 @@
+
+/** GENERAL PURPOSE LIBRARY **/
+
+cond qufunct inc(qureg x) {
+	int i;
+	quconst e = cond;
+	for i = #x-1 to 0 step -1 {
+		CNOT(x[i], x[0::i] & e);
+	}
+}
+
+
+cond qufunct eq(quconst x, int y, quvoid out) 
+{
+	quscratch cmp[#x];
+	quconst e = cond;
+	int i;
+
+	Fanout(x, cmp); 
+
+	for i = 0 to #x-1 {
+		if bit(y,i) {
+			NOT(cmp[i]);
+		}
+	}
+
+	NOT(cmp);
+	CNOT(out, cmp & e);
+}

@@ -1,0 +1,69 @@
+
+include "library";
+include "cpu";
+
+int width = 3;
+int memoryCells = 3;
+int programCells = 2^width-1;
+int cycles = 2^width-1;
+
+// CPU registers
+qureg ip[width];
+qureg inst[width];
+qureg a[width];
+qureg b[width];
+
+// Memory
+qureg program[width * programCells];
+
+
+
+/** SET UP PROGRAM **/
+set(1, seek(program, 0, width));
+dump program;
+
+/** RUN PROGRAM **/
+
+/*int cycle;
+for cycle = 1 to cycles {
+	fetch(ip, inst, program, width);
+
+	//dump ip;
+	dump inst;
+
+	if inst == 0 { } // NOP
+	if inst == 1 { inc(a); }
+	if inst == 2 { inc(b); }
+
+	!fetch(ip, inst, program, width);
+	inc(ip);
+}*/
+
+fetch(ip, inst, program, width);
+// !fetch(ip, inst, program, width);
+
+
+/** OUTPUT OF PROGAM **/
+
+//print "Completed cycles =", cycles;
+
+dump ip;
+dump inst;
+dump program;
+
+
+/*int outA;
+int outB;
+
+dump a;
+measure a, outA;
+print "A =", outA;
+
+dump b;
+measure b, outB;
+print "B =", outB;*/
+
+
+
+
+

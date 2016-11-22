@@ -1,0 +1,41 @@
+
+include "cpu";
+
+print "Testing eq()";
+
+qureg a[3];
+qureg r[1];
+int rOut;
+int i;
+int j;
+boolean fail;
+
+
+for i = 0 to 7 
+{
+	set(i, a);
+
+	for j = 0 to 7
+	{	
+		eq(a, j, r);
+
+		measure r, rOut;
+	
+		if i == j xor rOut == 0 {
+			print "Pass", i, "==", j, "->", rOut;
+		} else {
+			print "Fail", i, j;
+			fail = true;
+		}
+
+		!eq(a, j, r);
+	}
+
+	reset;
+}
+
+if fail {
+	print "Failed";
+} else {
+	print "Passed";
+}

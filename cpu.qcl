@@ -1,0 +1,36 @@
+
+include "library";
+
+/** MEMORY **/
+
+qureg seek(quconst memory, int i, int width) {
+	return memory[i*width :: width];
+}
+
+
+/** CPU EXECUTION **/
+
+cond qufunct fetch(quconst address, qureg dest, qureg memory, int width) {
+	int i;
+	qureg cmp[1];	
+	int cells = 1; //#memory/width;
+
+	for i = 0 to cells - 1 {
+
+		// print "i=", i;
+		// dump address;
+
+		eq(address, i, cmp);
+		dump seek(memory, i, width);
+		// dump cmp;
+		// dump address;
+
+		if cmp {
+			Swap(seek(memory, i, width), dest);
+		}
+
+		!eq(address, i, cmp);
+
+		// dump address;
+	}
+}

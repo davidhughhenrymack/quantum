@@ -18,20 +18,23 @@ int fail;
 int memIn;
 int memOut;
 
+// 16434824 is ascending numbers 0 to 7 in three bit cells
+
 
 for i = 0 to cells-1
 {
 	// if i != 0 {
 	// 	quickrand(mem);
 	// }
-	set(2, mem);
+	set(16434824, mem);
 	set(i, a);
 	
 	measure seek(mem,i), tst;
 	measure mem, memIn;
-	
-	fetch(a, mem, dest);
-	dump o;
+
+	// set log 1;
+	fetch2(a, mem, dest);
+	// set log 0;
 
 	measure dest, rOut;
 	// !fetchpll(a, mem, dest);

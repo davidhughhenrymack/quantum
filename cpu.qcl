@@ -27,26 +27,18 @@ cond qufunct fetch(quconst addr, qureg mem, qureg dest)
 	}	
 }
 
-cond qufunct fetch2(quconst addr, quconst mem, quvoid dest, quvoid o) 
+cond qufunct fetch2(quconst addr, quconst mem, quvoid dest) 
 {
 	const cells = #mem/width;
-
-	quscratch q[#dest];
 	int cell;
+
+	quscratch o[cells];
 
 	for cell = 0 to cells - 1
 	{
 		eq(addr,cell,o[cell::1]);
 		if o[cell::1] { 
-			// Not(q);
-			// CNot(dest, seek(mem, cell));
-			// seek(mem, cell);
-			// dump o[cell::1];
-			// dump seek(mem, cell);
-			// dump dest;
-			// print cell;
-			FanoutImpl(seek(mem, cell), dest);
-			// Fanout(dest,dest); 
+			Fanout(seek(mem, cell), dest);
 		}
 		// !eq(addr,cell,o[cell::1]);
 	}
@@ -87,7 +79,7 @@ procedure run(int cycles, qureg program, qureg a, qureg b)
 		dump program;
 
 		print "cycle", cycle;
-		fetch2(ip, program, inst, o);
+		fetch2(ip, program, inst);
 		dump o;
 
 		// dump ip;
@@ -95,7 +87,7 @@ procedure run(int cycles, qureg program, qureg a, qureg b)
 		dump program;
 
 		// execute(inst, a, b, ip);
-		!fetch2(ip, program, inst, o);
+		!fetch2(ip, program, inst);
 		
 		// inc(ip);
 	}

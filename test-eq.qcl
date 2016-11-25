@@ -22,7 +22,7 @@ for i = 0 to 7
 		measure r, rOut;
 	
 		if i == j xor rOut == 0 {
-			print "Pass", i, "==", j, "->", rOut;
+			// print "Pass", i, "==", j, "->", rOut;
 		} else {
 			print "Fail", i, j;
 			fail = true;

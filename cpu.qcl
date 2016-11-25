@@ -3,34 +3,108 @@ include "library";
 
 /** MEMORY **/
 
-qureg seek(quconst memory, int i, int width) {
+qureg seek(quconst memory, int i) {
 	return memory[i*width :: width];
 }
 
 
 /** CPU EXECUTION **/
 
-cond qufunct fetch(quconst address, qureg dest, qureg memory, int width) {
-	int i;
-	qureg cmp[1];	
-	int cells = 1; //#memory/width;
+cond qufunct fetch(quconst addr, qureg mem, qureg dest) 
+{
+	const cells = #mem/width;
 
-	for i = 0 to cells - 1 {
+	qureg o[cells];
+	int cell;
 
-		// print "i=", i;
-		// dump address;
+	for cell = 0 to cells - 1
+	{
+		eq(addr,cell,o[0::1]);
+		// dump o;
+		// dump mem;
+		if o[0::1] { Swap(seek(mem,cell),dest); }
+		!eq(addr,cell,o[0::1]);
+	}	
+}
 
-		eq(address, i, cmp);
-		dump seek(memory, i, width);
-		// dump cmp;
-		// dump address;
+cond qufunct fetch2(quconst addr, quconst mem, quvoid dest, quvoid o) 
+{
+	const cells = #mem/width;
 
-		if cmp {
-			Swap(seek(memory, i, width), dest);
+	quscratch q[#dest];
+	int cell;
+
+	for cell = 0 to cells - 1
+	{
+		eq(addr,cell,o[cell::1]);
+		if o[cell::1] { 
+			// Not(q);
+			// CNot(dest, seek(mem, cell));
+			// seek(mem, cell);
+			// dump o[cell::1];
+			// dump seek(mem, cell);
+			// dump dest;
+			// print cell;
+			FanoutImpl(seek(mem, cell), dest);
+			// Fanout(dest,dest); 
 		}
-
-		!eq(address, i, cmp);
-
-		// dump address;
+		// !eq(addr,cell,o[cell::1]);
 	}
 }
+
+
+cond qufunct execute(quconst inst, qureg a, qureg b, qureg ip) 
+{
+	qureg o[1];
+
+	eq(inst, 1, o);
+	if o { inc(a); }
+	!eq(inst, 1, o);
+
+	eq(inst, 2, o);
+	if o { inc(b); }
+	!eq(inst, 2, o);
+
+	eq(inst, 3, o);
+	if o { inc(a); }
+	!eq(inst, 3, o);
+
+}
+
+procedure run(int cycles, qureg program, qureg a, qureg b)
+{
+	int cycle;
+	int out;
+
+	qureg inst[width];
+	qureg ip[width];
+	qureg o[width];
+
+	for cycle = 1 to cycles 
+	{
+		// dump ip;
+		// dump inst;
+		dump program;
+
+		print "cycle", cycle;
+		fetch2(ip, program, inst, o);
+		dump o;
+
+		// dump ip;
+		// dump inst;
+		dump program;
+
+		// execute(inst, a, b, ip);
+		!fetch2(ip, program, inst, o);
+		
+		// inc(ip);
+	}
+
+
+
+	dump ip;
+	dump inst;
+	dump program;
+}
+
+

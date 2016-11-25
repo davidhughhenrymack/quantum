@@ -1,4 +1,6 @@
 
+include "const";
+
 /** GENERAL PURPOSE LIBRARY **/
 
 cond qufunct inc(qureg x) {
@@ -26,4 +28,28 @@ cond qufunct eq(quconst x, int y, quvoid out)
 
 	NOT(cmp);
 	CNOT(out, cmp & e);
+}
+
+
+procedure quickrand(qureg q) {
+  int i;
+  for i=0 to #q-1 {
+  	if random()>0.5 {
+  		set(1, q[i]);
+  	}
+  }
+}
+
+/* QCL passes quantum cond through stack on odd way. 
+   Adding quconst e fixes broken code. 
+*/
+
+/* alternative implementation; comment out if you want */
+/* an explicit decomposition using CNot gates          */
+
+cond qufunct FanoutImpl(quconst a,quvoid b) {
+  int i;
+  quconst e = cond;
+  if #a!=#b { exit "fanout arguments must be of equal size"; }
+  for i=0 to #a-1 { CNot(b[i],a[i] & e); }
 }

@@ -1,0 +1,115 @@
+
+
+include "library";
+
+qureg a[4];
+qureg b[4];
+qureg c[1];
+int out;
+
+set(12, a);
+FanoutImpl(a, b);
+measure b, out;
+if out == 12 {
+	print "Pass";
+} else {
+	print "Fail";
+}
+
+
+
+
+reset;
+set(12, a);
+Fanout(a, b);
+measure b, out;
+if out == 12 {
+	print "Pass";
+} else {
+	print "Fail";
+}
+
+
+
+
+reset;
+
+set(12, a);
+Not(c);
+
+qufunct c1(quconst a, quvoid b, quconst c) {
+	if c {
+		FanoutImpl(a,b);
+	}
+}
+
+c1(a, b, c);
+measure b, out;
+if out == 12 {
+	print "Pass";
+} else {
+	print "Fail", out;
+	dump c;
+}
+
+
+
+reset;
+
+set(12, a);
+Not(c);
+
+cond qufunct c3(quconst a, quvoid b) {
+	FanoutImpl(a,b);
+}
+
+if c { c3(a, b); }
+measure b, out;
+if out == 12 {
+	print "Pass";
+} else {
+	print "Fail", out;
+	dump c;
+}
+
+
+
+
+reset;
+
+set(12, a);
+Not(c);
+
+cond qufunct c4(quconst a, quvoid b) {
+	Fanout(a,b);
+}
+
+if c { c4(a, b); }
+measure b, out;
+if out == 12 {
+	print "Pass";
+} else {
+	print "Fail", out;
+	dump c;
+}
+
+
+
+
+
+
+reset;
+
+set(12, a);
+Not(c);
+
+if c {
+	Fanout(a,b);
+}
+measure b, out;
+if out == 12 {
+	print "Pass";
+} else {
+	print "Fail", out;
+	dump c;
+}

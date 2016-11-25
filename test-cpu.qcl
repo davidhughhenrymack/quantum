@@ -1,42 +1,38 @@
 
 include "cpu";
 
-const width = 1;
-const size = 10;
+int memoryCells = 3;
+int cycles = cells;
 
-int i;
-int tst;
-int out;
-boolean fail;
+int programIn;
+int programOut;
 
-qureg mem[size*width];
-qureg address[width];
-qureg dest[width];
 
-for i = 0 to size-1 {
+// Memory
+qureg program[width * cells];
+qureg a[width];
+qureg b[width];
 
-	set(i, address);
-	if random() > 0.5 {
-		tst = 1;
-	}
-	set(tst, mem[i]);
 
-	fetch(address, dest, mem, width);
+// Set up program
+// set(1, seek(program, 0));
+// set(2, seek(program, 1));
+// set(3, seek(program, 2));
 
-	measure dest, out;
+// dump program;
+measure program, programIn;
 
-	if out == tst { print "Pass", i; }
-	else { 
-		print "Fail", out, tst, i;
-		fail = true;
-	}
+// Run
+run(cycles, program, a, b);
 
-	reset;
+// dump program;
+
+measure program, programOut;
+
+if programIn == programOut {
+	print "Pass";
+} else {
+	print "Fail", programIn, "!=", programOut;
 }
 
-if fail {
-	print "Failed";
-}
-else {
-	print "Passed";
-}
+

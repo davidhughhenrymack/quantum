@@ -47,7 +47,7 @@ procedure quickrand(qureg q) {
 /* alternative implementation; comment out if you want */
 /* an explicit decomposition using CNot gates          */
 
-cond qufunct FanoutImpl(quconst a,quvoid b) {
+cond qufunct FanoutC(quconst a,quvoid b) {
   int i;
   quconst e = cond;
   if #a!=#b { exit "fanout arguments must be of equal size"; }

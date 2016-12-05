@@ -9,51 +9,95 @@ qureg a[width];
 qureg dest[width];
 qureg mem[cells * width];
 qureg o[cells];
-int rOut;
+
+
 int i;
 int j;
-int tst;
-int fail;
+int k;
+int cell;
 
+int tst;
+
+int rOut;
+int oOut;
+int dOut;
 int memIn;
 int memOut;
+int memInitial;
+
+int fail;
+int pass;
 
 // 16434824 is ascending numbers 0 to 7 in three bit cells
 
+set check 1;
+set show-regs 1;
 
-for i = 0 to cells-1
-{
-	// if i != 0 {
-	// 	quickrand(mem);
-	// }
-	set(16434824, mem);
-	set(i, a);
-	
-	measure seek(mem,i), tst;
-	measure mem, memIn;
+for j = 1 to 1 {
 
-	// set log 1;
-	fetch2(a, mem, dest);
-	// set log 0;
+	memInitial = floor(random() * 2^(cells*width));
 
-	measure dest, rOut;
-	// !fetchpll(a, mem, dest);
-	// dump mem;
+	for i = 1 to 1 // 0 to cells-1
+	{
 
-	measure mem, memOut;
+		print "--- Fetch cell", i;
 
-	if rOut == tst and memOut == memIn {
-		print i, "Pass:", rOut, "=", tst, memOut, "=", memIn;
-	} else {
-		print i, "Fail:", rOut, "=", tst, memOut, "=", memIn;
-		fail = fail + 1;
+		set(16434824, mem);
+		// set(memInitial, mem);
+		set(i, a);
+		
+		measure seek(mem,i), tst;
+		measure mem, memIn;
+		
+		fetch2a(mem, a, o);	
+
+		// I believe the problem is that fanout expects 0 on the dest
+		// once those are not, the "incidental causality" breaks down.
+		
+		dump;
+
+		set log 1;
+		set log-state 1;
+
+		for k = 1 to 1 //cells - 1 
+		{
+			print "--- --- Copy cell", k;
+			dump seek(mem, k);
+			dump o[k::1];
+			fetch2bs(mem, o[0..3], k);
+			dump dest;
+			dump o;
+		}
+
+		print "--- Done";
+		
+		dump o;
+		
+		set log 0;
+
+		measure dest, rOut;
+		// !fetchpll(a, mem, dest);
+		// dump mem;
+
+		measure mem, memOut;
+
+		if rOut == tst and memOut == memIn {
+			print i, "Pass: fetched", rOut, "= actual", tst; //, memOut, "=", memIn;
+			pass = pass + 1;
+		} else {
+			// dump o;
+			print i, "Fail: fetched", rOut, "!= actual", tst; //, memOut, "=", memIn;
+			fail = fail + 1;
+		}
+		
+		reset;
 	}
-
-	reset;
 }
 
+
+
 if fail > 0 {
-	print "Failed" , fail, "times";
+	print "Failed" , fail, "times, passed", pass, "times";
 } else {
 	print "Passed";
 }

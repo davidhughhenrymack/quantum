@@ -22,7 +22,7 @@ cond qufunct fetch(quconst addr, qureg mem, qureg dest)
 		eq(addr,cell,o[0::1]);
 		// dump o;
 		// dump mem;
-		if o[0::1] { Swap(seek(mem,cell),dest); }
+		if o[0::1] { seek(mem,cell) <-> dest; }
 		!eq(addr,cell,o[0::1]);
 	}	
 }
@@ -38,9 +38,41 @@ cond qufunct fetch2(quconst addr, quconst mem, quvoid dest)
 	{
 		eq(addr,cell,o[cell::1]);
 		if o[cell::1] { 
-			Fanout(seek(mem, cell), dest);
+			seek(mem, cell) -> dest;
 		}
-		// !eq(addr,cell,o[cell::1]);
+	}
+}
+
+cond qufunct fetch2a(quconst mem, quconst addr, quvoid out) 
+{
+	const cells = min(#mem/width, #out);
+	int cell;
+
+	for cell = 0 to cells - 1
+	{
+		eq(addr,cell,out[cell::1]);
+	}
+}
+
+cond qufunct fetch2b(quconst mem, quconst lookup, quvoid dest) 
+{
+	const cells = #mem/width;
+	int cell;
+
+	for cell = 0 to cells - 1
+	{
+		if lookup[cell::1] { 
+			seek(mem, cell) -> dest;
+		}
+	}
+}
+
+cond qufunct fetch2bs(quconst mem, quconst lookup, int cell) 
+{
+	quscratch out[width];
+	if lookup[cell::1] { 
+		seek(mem, cell) -> out; //dest;
+		// FanoutC(seek(mem, cell), dest);
 	}
 }
 
@@ -79,7 +111,7 @@ procedure run(int cycles, qureg program, qureg a, qureg b)
 		dump program;
 
 		print "cycle", cycle;
-		fetch2(ip, program, inst);
+		fetch(ip, program, inst);
 		dump o;
 
 		// dump ip;
@@ -87,7 +119,7 @@ procedure run(int cycles, qureg program, qureg a, qureg b)
 		dump program;
 
 		// execute(inst, a, b, ip);
-		!fetch2(ip, program, inst);
+		!fetch(ip, program, inst);
 		
 		// inc(ip);
 	}

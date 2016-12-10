@@ -82,7 +82,7 @@ qufunct fetch2bs(quconst memory, int cell, quvoid dest)
 	}
 
 	if a { 
-		seek(memory, cell) -> destnon;
+		seek(memory, cell) -> dest;
 	}
 }
 

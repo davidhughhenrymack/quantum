@@ -49,7 +49,7 @@ for j = 1 to 1 {
 		measure seek(mem,i), tst;
 		measure mem, memIn;
 		
-		fetch2a(mem, a, o);	
+		// fetch2a(mem, a, o);	
 
 		// I believe the problem is that fanout expects 0 on the dest
 		// once those are not, the "incidental causality" breaks down.
@@ -64,7 +64,7 @@ for j = 1 to 1 {
 			print "--- --- Copy cell", k;
 			dump seek(mem, k);
 			dump o[k::1];
-			fetch2bs(mem, o[0..3], k);
+			fetch2bs(mem, k, dest);
 			dump dest;
 			dump o;
 		}

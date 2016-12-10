@@ -67,12 +67,22 @@ cond qufunct fetch2b(quconst mem, quconst lookup, quvoid dest)
 	}
 }
 
-cond qufunct fetch2bs(quconst mem, quconst lookup, int cell) 
+qufunct fetch2bs(quconst memory, int cell, quvoid dest) 
 {
-	quscratch out[width];
-	if lookup[cell::1] { 
-		seek(mem, cell) -> out; //dest;
-		// FanoutC(seek(mem, cell), dest);
+	// quconst c = cond;
+	// lookup[cell::1] & 
+	// dump lookup;
+	quscratch a[1];
+	quscratch destnon[width];
+	
+	set(1, a);
+
+	if #dest != #seek(memory, cell) {
+		exit "Cannot fetch into wrongly sized dest";
+	}
+
+	if a { 
+		seek(memory, cell) -> destnon;
 	}
 }
 

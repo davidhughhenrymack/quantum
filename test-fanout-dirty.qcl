@@ -1,0 +1,20 @@
+
+qureg a[3];
+qureg b[3];
+qureg c[1];
+
+set(2, a);
+set(2, b);
+set(1, c);
+
+cond qufunct f(qureg a, qureg b, qureg c) {
+	if c {
+		Fanout(a, b);
+	}
+}
+
+f(a,b,c);
+
+dump a;
+dump b;
+dump c;

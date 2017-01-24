@@ -31,7 +31,7 @@ int pass;
 // 16434824 is ascending numbers 0 to 7 in three bit cells
 
 set check 1;
-set show-regs 1;
+// set show-regs 1;
 
 for j = 1 to 1 {
 
@@ -44,27 +44,28 @@ for j = 1 to 1 {
 
 		set(16434824, mem);
 		// set(memInitial, mem);
-		set(i, a);
+		set(i, a); // address
 		
 		measure seek(mem,i), tst;
 		measure mem, memIn;
 		
-		// fetch2a(mem, a, o);	
+		fetch2a(mem, a, o);
 
 		// I believe the problem is that fanout expects 0 on the dest
 		// once those are not, the "incidental causality" breaks down.
 		
-		dump;
+		dump o;
+		dump dest;
 
 		set log 1;
 		set log-state 1;
 
-		for k = 1 to 1 //cells - 1 
+		for k = 1 to 1 // cells - 1 
 		{
 			print "--- --- Copy cell", k;
 			dump seek(mem, k);
 			dump o[k::1];
-			fetch2bs(mem, k, dest);
+			fetch2bsn(mem, k, o[k::1], dest);
 			dump dest;
 			dump o;
 		}
